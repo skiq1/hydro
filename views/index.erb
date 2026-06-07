@@ -1,12 +1,21 @@
 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
   <div>
     <h1 class="h3 mb-1">Zebrane punkty</h1>
-    <p class="text-secondary mb-0"><%= @observations.length %> rekordów gotowych do kontroli lub importu.</p>
+    <p class="text-secondary mb-0"><%= @observations.length %> rekordów<%= @group_filter ? " - Grupa #{@group_filter}" : "" %> gotowych do kontroli lub importu.</p>
   </div>
   <div class="d-flex gap-2">
     <a class="btn btn-primary" href="/">Dodaj</a>
-    <a class="btn btn-outline-secondary" href="/export.geojson">GeoJSON</a>
-    <a class="btn btn-outline-secondary" href="/export.csv">CSV</a>
+    <% export_query = @group_filter ? "?group=#{@group_filter}" : "" %>
+    <a class="btn btn-outline-secondary" href="/export.geojson<%= export_query %>">GeoJSON</a>
+    <a class="btn btn-outline-secondary" href="/export.csv<%= export_query %>">CSV</a>
+  </div>
+</div>
+
+<div class="filter-bar mb-3">
+  <div class="btn-group w-100 w-md-auto" role="group" aria-label="Filtrowanie po grupie">
+    <a class="btn <%= @group_filter.nil? ? "btn-primary" : "btn-outline-primary" %>" href="/observations">Wszystkie</a>
+    <a class="btn <%= @group_filter == 1 ? "btn-primary" : "btn-outline-primary" %>" href="/observations?group=1">Grupa 1</a>
+    <a class="btn <%= @group_filter == 2 ? "btn-primary" : "btn-outline-primary" %>" href="/observations?group=2">Grupa 2</a>
   </div>
 </div>
 
@@ -22,12 +31,13 @@
       <thead>
         <tr>
           <th>ID</th>
+          <th>Grupa</th>
           <th>Nazwa</th>
           <th>Opis</th>
           <th>Lat</th>
           <th>Lon</th>
           <th>Dokładność</th>
-          <th>Zdjęcie</th>
+          <th>Zdjęcia</th>
           <th>Data</th>
         </tr>
       </thead>
@@ -35,14 +45,16 @@
         <% @observations.each do |row| %>
           <tr>
             <td><a href="/observations/<%= row["id"] %>">#<%= row["id"] %></a></td>
+            <td><span class="badge text-bg-light">Grupa <%= row["group_number"] || 1 %></span></td>
             <td class="fw-semibold"><%= h(row["name"]) %></td>
             <td class="text-truncate description-cell"><%= h(row["description"]) %></td>
             <td><code><%= row["latitude"] %></code></td>
             <td><code><%= row["longitude"] %></code></td>
             <td><%= row["accuracy"] ? "#{row["accuracy"].round} m" : "-" %></td>
             <td>
-              <% if photo_url(row["photo_path"]) %>
-                <a href="<%= row["photo_path"] %>" target="_blank" rel="noopener">Otwórz</a>
+              <% photos = photos_for_observation(row["id"]) %>
+              <% if photos.any? %>
+                <a href="<%= photos.first["path"] %>" target="_blank" rel="noopener"><%= photos.length %> szt.</a>
               <% else %>
                 -
               <% end %>
@@ -64,6 +76,9 @@
           </div>
           <span class="badge text-bg-light">#<%= row["id"] %></span>
         </div>
+        <div class="mt-2">
+          <span class="badge text-bg-light">Grupa <%= row["group_number"] || 1 %></span>
+        </div>
         <% unless row["description"].to_s.empty? %>
           <p class="mt-2 mb-2"><%= h(row["description"]) %></p>
         <% end %>
@@ -72,8 +87,9 @@
         </div>
         <div class="d-flex gap-2">
           <a class="btn btn-sm btn-outline-primary" href="<%= osm_link(row) %>" target="_blank" rel="noopener">Mapa</a>
-          <% if photo_url(row["photo_path"]) %>
-            <a class="btn btn-sm btn-outline-secondary" href="<%= row["photo_path"] %>" target="_blank" rel="noopener">Zdjęcie</a>
+          <% photos = photos_for_observation(row["id"]) %>
+          <% if photos.any? %>
+            <a class="btn btn-sm btn-outline-secondary" href="<%= photos.first["path"] %>" target="_blank" rel="noopener">Zdjęcia: <%= photos.length %></a>
           <% end %>
         </div>
       </article>

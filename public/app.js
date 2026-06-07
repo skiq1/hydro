@@ -12,8 +12,8 @@
   const initialLat = parseFloat(mapEl.dataset.lat || "");
   const initialLng = parseFloat(mapEl.dataset.lng || "");
   const hasInitialPoint = Number.isFinite(initialLat) && Number.isFinite(initialLng);
-  const defaultCenter = hasInitialPoint ? [initialLat, initialLng] : [52.0693, 19.4803];
-  const defaultZoom = hasInitialPoint ? 17 : 6;
+  const defaultCenter = hasInitialPoint ? [initialLat, initialLng] : [52.6294684, 15.8627129];
+  const defaultZoom = hasInitialPoint ? 17 : 14;
 
   const map = L.map(mapEl, {
     zoomControl: true,

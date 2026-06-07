@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
       <div>
         <h1 class="h3 mb-1">Nowy punkt</h1>
-        <p class="text-secondary mb-0">Zapisz pomiar, lokalizację i zdjęcie z terenu.</p>
+        <p class="text-secondary mb-0">Zapisz pomiar, lokalizację i zdjęcia z terenu.</p>
       </div>
       <a class="btn btn-outline-secondary d-none d-sm-inline-flex" href="/observations">Lista</a>
     </div>
@@ -25,14 +25,26 @@
         <input class="form-control form-control-lg" id="name" name="name" required autocomplete="off" value="<%= h(@form_values&.dig("name")) %>" placeholder="">
       </div>
 
+      <% selected_group = @form_values&.dig("group_number") || @selected_group || 1 %>
       <div class="mb-3">
-        <label class="form-label" for="description">Opis</label>
-        <textarea class="form-control" id="description" name="description" rows="4"><%= h(@form_values&.dig("description")) %></textarea>
+        <label class="form-label d-block">Grupa</label>
+        <div class="btn-group group-toggle w-100" role="group" aria-label="Wybór grupy">
+          <input class="btn-check" type="radio" name="group_number" id="group-1" value="1" autocomplete="off" <%= selected_group.to_i == 1 ? "checked" : "" %>>
+          <label class="btn btn-outline-primary btn-lg" for="group-1">Grupa 1</label>
+
+          <input class="btn-check" type="radio" name="group_number" id="group-2" value="2" autocomplete="off" <%= selected_group.to_i == 2 ? "checked" : "" %>>
+          <label class="btn btn-outline-primary btn-lg" for="group-2">Grupa 2</label>
+        </div>
       </div>
 
       <div class="mb-3">
-        <label class="form-label" for="photo">Zdjęcie</label>
-        <input class="form-control form-control-lg" id="photo" name="photo" type="file" accept="image/*" capture="environment">
+        <label class="form-label" for="description">Opis</label>
+        <textarea class="form-control field-description" id="description" name="description" rows="8"><%= h(@form_values&.dig("description")) %></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="photos">Zdjęcia</label>
+        <input class="form-control form-control-lg" id="photos" name="photos[]" type="file" accept="image/*" multiple>
       </div>
 
       <input type="hidden" id="latitude" name="latitude" value="<%= h(@form_values&.dig("latitude")) %>">
@@ -58,8 +70,8 @@
     <h2 class="h5 mb-3">Dane do QGIS</h2>
     <div class="d-grid gap-2">
       <a class="btn btn-outline-primary" href="/observations">Przeglądaj punkty</a>
-      <a class="btn btn-outline-secondary" href="/export.geojson">GeoJSON</a>
-      <a class="btn btn-outline-secondary" href="/export.csv">CSV</a>
+      <a class="btn btn-outline-secondary" href="/export.geojson?group=<%= selected_group %>">GeoJSON tej grupy</a>
+      <a class="btn btn-outline-secondary" href="/export.csv?group=<%= selected_group %>">CSV tej grupy</a>
     </div>
   </aside>
 </section>

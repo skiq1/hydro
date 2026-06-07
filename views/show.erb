@@ -5,7 +5,7 @@
 <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
   <div>
     <h1 class="h3 mb-1"><%= h(@observation["name"]) %></h1>
-    <p class="text-secondary mb-0">Punkt #<%= @observation["id"] %> · <%= h(format_time(@observation["created_at"])) %></p>
+    <p class="text-secondary mb-0">Punkt #<%= @observation["id"] %> · Grupa <%= @observation["group_number"] || 1 %> · <%= h(format_time(@observation["created_at"])) %></p>
   </div>
   <a class="btn btn-outline-secondary" href="/observations">Lista</a>
 </div>
@@ -15,8 +15,8 @@
     <div id="map" class="map detail-map" data-lat="<%= @observation["latitude"] %>" data-lng="<%= @observation["longitude"] %>" data-readonly="true"></div>
     <div class="mt-3 d-flex flex-wrap gap-2">
       <a class="btn btn-primary" href="<%= osm_link(@observation) %>" target="_blank" rel="noopener">Otwórz w OSM</a>
-      <a class="btn btn-outline-secondary" href="/export.geojson">GeoJSON</a>
-      <a class="btn btn-outline-secondary" href="/export.csv">CSV</a>
+      <a class="btn btn-outline-secondary" href="/export.geojson?group=<%= @observation["group_number"] || 1 %>">GeoJSON grupy</a>
+      <a class="btn btn-outline-secondary" href="/export.csv?group=<%= @observation["group_number"] || 1 %>">CSV grupy</a>
     </div>
   </section>
 
@@ -24,6 +24,8 @@
     <dl class="row mb-0">
       <dt class="col-sm-4">Nazwa</dt>
       <dd class="col-sm-8"><%= h(@observation["name"]) %></dd>
+      <dt class="col-sm-4">Grupa</dt>
+      <dd class="col-sm-8">Grupa <%= @observation["group_number"] || 1 %></dd>
       <dt class="col-sm-4">Opis</dt>
       <dd class="col-sm-8"><%= @observation["description"].to_s.empty? ? "-" : h(@observation["description"]) %></dd>
       <dt class="col-sm-4">Latitude</dt>
@@ -34,10 +36,15 @@
       <dd class="col-sm-8"><%= @observation["accuracy"] ? "#{@observation["accuracy"].round} m" : "-" %></dd>
     </dl>
 
-    <% if photo_url(@observation["photo_path"]) %>
-      <a href="<%= @observation["photo_path"] %>" target="_blank" rel="noopener">
-        <img class="detail-photo mt-3" src="<%= @observation["photo_path"] %>" alt="Zdjęcie punktu <%= h(@observation["name"]) %>">
-      </a>
+    <% photos = photos_for_observation(@observation["id"]) %>
+    <% if photos.any? %>
+      <div class="photo-grid mt-3">
+        <% photos.each_with_index do |photo, index| %>
+          <a href="<%= photo["path"] %>" target="_blank" rel="noopener">
+            <img class="detail-photo" src="<%= photo["path"] %>" alt="Zdjęcie <%= index + 1 %> punktu <%= h(@observation["name"]) %>">
+          </a>
+        <% end %>
+      </div>
     <% end %>
   </section>
 </div>
