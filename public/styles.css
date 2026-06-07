@@ -1,0 +1,142 @@
+:root {
+  --surface: #ffffff;
+  --line: #d8dee4;
+  --ink-muted: #5b6673;
+  --water: #0f7fa8;
+  --land: #4f7d4f;
+}
+
+body {
+  background: #f6f8fa;
+  color: #18202a;
+}
+
+.navbar-brand {
+  color: var(--water);
+}
+
+.field-layout,
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1rem;
+  align-items: start;
+}
+
+.field-form,
+.quick-panel,
+.detail-panel,
+.empty-state,
+.observation-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.quick-panel,
+.detail-panel {
+  position: sticky;
+  top: 5rem;
+}
+
+.map {
+  width: 100%;
+  height: min(58vh, 520px);
+  min-height: 340px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #dfe8ed;
+}
+
+.detail-map {
+  height: min(62vh, 620px);
+}
+
+.location-readout {
+  min-height: 1.5rem;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+.description-cell {
+  max-width: 280px;
+}
+
+.mobile-list {
+  display: none;
+}
+
+.observation-card + .observation-card {
+  margin-top: 0.75rem;
+}
+
+.detail-photo {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #eef2f4;
+}
+
+.empty-state {
+  max-width: 680px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--water);
+  --bs-btn-border-color: var(--water);
+  --bs-btn-hover-bg: #0c6f94;
+  --bs-btn-hover-border-color: #0c6f94;
+}
+
+.btn-success {
+  --bs-btn-bg: var(--land);
+  --bs-btn-border-color: var(--land);
+  --bs-btn-hover-bg: #426b42;
+  --bs-btn-hover-border-color: #426b42;
+}
+
+@media (max-width: 900px) {
+  .field-layout,
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-panel,
+  .detail-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  main.container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .desktop-table {
+    display: none;
+  }
+
+  .mobile-list {
+    display: block;
+  }
+
+  .map {
+    height: 48vh;
+    min-height: 300px;
+  }
+
+  .field-form,
+  .quick-panel,
+  .detail-panel,
+  .observation-card {
+    padding: 0.875rem;
+  }
+}

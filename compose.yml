@@ -1,0 +1,14 @@
+services:
+  hydro-api:
+    build: .
+    container_name: hydro-api
+    restart: unless-stopped
+    ports:
+      - "4567:4567"
+    environment:
+      RACK_ENV: production
+      PORT: 4567
+      DATABASE_PATH: /app/data/hydro.sqlite3
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads

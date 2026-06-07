@@ -1,0 +1,30 @@
+# Bundler
+/.bundle/
+/vendor/bundle/
+
+# Local data
+/data/
+/public/uploads/
+
+# Logs and temp files
+/log/
+/tmp/
+*.log
+*.pid
+
+# SQLite
+*.sqlite3
+*.sqlite3-*
+*.db
+
+# Environment
+.env
+.env.*
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/

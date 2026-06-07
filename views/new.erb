@@ -1,0 +1,65 @@
+<section class="field-layout">
+  <div>
+    <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+      <div>
+        <h1 class="h3 mb-1">Nowy punkt</h1>
+        <p class="text-secondary mb-0">Zapisz pomiar, lokalizację i zdjęcie z terenu.</p>
+      </div>
+      <a class="btn btn-outline-secondary d-none d-sm-inline-flex" href="/observations">Lista</a>
+    </div>
+
+    <% if defined?(@errors) && @errors.any? %>
+      <div class="alert alert-danger" role="alert">
+        <strong>Popraw dane:</strong>
+        <ul class="mb-0 mt-2">
+          <% @errors.each do |error| %>
+            <li><%= h(error) %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <form action="/observations" method="post" enctype="multipart/form-data" class="field-form">
+      <div class="mb-3">
+        <label class="form-label" for="name">Nazwa punktu</label>
+        <input class="form-control form-control-lg" id="name" name="name" required autocomplete="off" value="<%= h(@form_values&.dig("name")) %>" placeholder="">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="description">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="4"><%= h(@form_values&.dig("description")) %></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="photo">Zdjęcie</label>
+        <input class="form-control form-control-lg" id="photo" name="photo" type="file" accept="image/*" capture="environment">
+      </div>
+
+      <input type="hidden" id="latitude" name="latitude" value="<%= h(@form_values&.dig("latitude")) %>">
+      <input type="hidden" id="longitude" name="longitude" value="<%= h(@form_values&.dig("longitude")) %>">
+      <input type="hidden" id="accuracy" name="accuracy" value="<%= h(@form_values&.dig("accuracy")) %>">
+
+      <div class="location-panel mb-3">
+        <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+          <label class="form-label mb-0">Lokalizacja</label>
+          <button class="btn btn-primary" type="button" data-locate>
+            <span class="locate-label">Użyj GPS</span>
+          </button>
+        </div>
+        <div id="map" class="map" data-lat="<%= h(@form_values&.dig("latitude")) %>" data-lng="<%= h(@form_values&.dig("longitude")) %>"></div>
+        <div class="location-readout mt-2" data-location-readout>Brak lokalizacji. Użyj GPS albo dotknij mapy.</div>
+      </div>
+
+      <button class="btn btn-success btn-lg w-100" type="submit">Zapisz punkt</button>
+    </form>
+  </div>
+
+  <aside class="quick-panel">
+    <h2 class="h5 mb-3">Dane do QGIS</h2>
+    <div class="d-grid gap-2">
+      <a class="btn btn-outline-primary" href="/observations">Przeglądaj punkty</a>
+      <a class="btn btn-outline-secondary" href="/export.geojson">GeoJSON</a>
+      <a class="btn btn-outline-secondary" href="/export.csv">CSV</a>
+    </div>
+  </aside>
+</section>

@@ -1,0 +1,7 @@
+.bundle
+.git
+data
+public/uploads
+tmp
+*.sqlite3
+*.db

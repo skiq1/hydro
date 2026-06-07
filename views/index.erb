@@ -1,0 +1,82 @@
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
+  <div>
+    <h1 class="h3 mb-1">Zebrane punkty</h1>
+    <p class="text-secondary mb-0"><%= @observations.length %> rekordów gotowych do kontroli lub importu.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary" href="/">Dodaj</a>
+    <a class="btn btn-outline-secondary" href="/export.geojson">GeoJSON</a>
+    <a class="btn btn-outline-secondary" href="/export.csv">CSV</a>
+  </div>
+</div>
+
+<% if @observations.empty? %>
+  <div class="empty-state">
+    <h2 class="h5">Brak danych</h2>
+    <p class="text-secondary mb-3">Pierwszy punkt pojawi się tutaj po zapisie z formularza terenowego.</p>
+    <a class="btn btn-primary" href="/">Dodaj punkt</a>
+  </div>
+<% else %>
+  <div class="table-responsive desktop-table">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nazwa</th>
+          <th>Opis</th>
+          <th>Lat</th>
+          <th>Lon</th>
+          <th>Dokładność</th>
+          <th>Zdjęcie</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @observations.each do |row| %>
+          <tr>
+            <td><a href="/observations/<%= row["id"] %>">#<%= row["id"] %></a></td>
+            <td class="fw-semibold"><%= h(row["name"]) %></td>
+            <td class="text-truncate description-cell"><%= h(row["description"]) %></td>
+            <td><code><%= row["latitude"] %></code></td>
+            <td><code><%= row["longitude"] %></code></td>
+            <td><%= row["accuracy"] ? "#{row["accuracy"].round} m" : "-" %></td>
+            <td>
+              <% if photo_url(row["photo_path"]) %>
+                <a href="<%= row["photo_path"] %>" target="_blank" rel="noopener">Otwórz</a>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td><%= h(format_time(row["created_at"])) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mobile-list">
+    <% @observations.each do |row| %>
+      <article class="observation-card">
+        <div class="d-flex justify-content-between gap-3">
+          <div>
+            <h2 class="h5 mb-1"><a href="/observations/<%= row["id"] %>"><%= h(row["name"]) %></a></h2>
+            <div class="text-secondary small"><%= h(format_time(row["created_at"])) %></div>
+          </div>
+          <span class="badge text-bg-light">#<%= row["id"] %></span>
+        </div>
+        <% unless row["description"].to_s.empty? %>
+          <p class="mt-2 mb-2"><%= h(row["description"]) %></p>
+        <% end %>
+        <div class="small text-secondary mb-2">
+          <code><%= row["latitude"] %>, <%= row["longitude"] %></code>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-primary" href="<%= osm_link(row) %>" target="_blank" rel="noopener">Mapa</a>
+          <% if photo_url(row["photo_path"]) %>
+            <a class="btn btn-sm btn-outline-secondary" href="<%= row["photo_path"] %>" target="_blank" rel="noopener">Zdjęcie</a>
+          <% end %>
+        </div>
+      </article>
+    <% end %>
+  </div>
+<% end %>

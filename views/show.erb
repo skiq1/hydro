@@ -1,0 +1,43 @@
+<% if params[:created] %>
+  <div class="alert alert-success" role="alert">Punkt zapisany.</div>
+<% end %>
+
+<div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+  <div>
+    <h1 class="h3 mb-1"><%= h(@observation["name"]) %></h1>
+    <p class="text-secondary mb-0">Punkt #<%= @observation["id"] %> · <%= h(format_time(@observation["created_at"])) %></p>
+  </div>
+  <a class="btn btn-outline-secondary" href="/observations">Lista</a>
+</div>
+
+<div class="detail-grid">
+  <section>
+    <div id="map" class="map detail-map" data-lat="<%= @observation["latitude"] %>" data-lng="<%= @observation["longitude"] %>" data-readonly="true"></div>
+    <div class="mt-3 d-flex flex-wrap gap-2">
+      <a class="btn btn-primary" href="<%= osm_link(@observation) %>" target="_blank" rel="noopener">Otwórz w OSM</a>
+      <a class="btn btn-outline-secondary" href="/export.geojson">GeoJSON</a>
+      <a class="btn btn-outline-secondary" href="/export.csv">CSV</a>
+    </div>
+  </section>
+
+  <section class="detail-panel">
+    <dl class="row mb-0">
+      <dt class="col-sm-4">Nazwa</dt>
+      <dd class="col-sm-8"><%= h(@observation["name"]) %></dd>
+      <dt class="col-sm-4">Opis</dt>
+      <dd class="col-sm-8"><%= @observation["description"].to_s.empty? ? "-" : h(@observation["description"]) %></dd>
+      <dt class="col-sm-4">Latitude</dt>
+      <dd class="col-sm-8"><code><%= @observation["latitude"] %></code></dd>
+      <dt class="col-sm-4">Longitude</dt>
+      <dd class="col-sm-8"><code><%= @observation["longitude"] %></code></dd>
+      <dt class="col-sm-4">Dokładność</dt>
+      <dd class="col-sm-8"><%= @observation["accuracy"] ? "#{@observation["accuracy"].round} m" : "-" %></dd>
+    </dl>
+
+    <% if photo_url(@observation["photo_path"]) %>
+      <a href="<%= @observation["photo_path"] %>" target="_blank" rel="noopener">
+        <img class="detail-photo mt-3" src="<%= @observation["photo_path"] %>" alt="Zdjęcie punktu <%= h(@observation["name"]) %>">
+      </a>
+    <% end %>
+  </section>
+</div>
