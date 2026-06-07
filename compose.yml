@@ -1,10 +1,10 @@
 services:
-  hydro-api:
+  hydroapp:
     build: .
-    container_name: hydro-api
+    container_name: hydroapp
     restart: unless-stopped
-    ports:
-      - "4567:4567"
+    expose:
+      - "4567"
     environment:
       RACK_ENV: production
       PORT: 4567
@@ -12,3 +12,17 @@ services:
     volumes:
       - ./data:/app/data
       - ./public/uploads:/app/public/uploads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.hydroapp.rule=Host(`hydro.dqq.pl`)"
+      - "traefik.http.routers.hydroapp.entrypoints=websecure"
+      - "traefik.http.routers.hydroapp.tls=true"
+      - "traefik.http.routers.hydroapp.tls.certresolver=myresolver"
+      - "traefik.http.services.hydroapp.loadbalancer.server.port=4567"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

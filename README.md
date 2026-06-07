@@ -17,7 +17,19 @@ http://localhost:4567
 docker compose up -d --build
 ```
 
-Domyślnie serwis słucha na porcie `4567`.
+Aplikacja jest wystawiana przez Traefika pod domeną:
+
+```text
+https://hydro.dqq.pl
+```
+
+Compose zakłada wspólną zewnętrzną sieć Dockera o nazwie `proxy`. Utwórz ją raz na serwerze:
+
+```bash
+docker network create proxy
+```
+
+Kontener Traefika z osobnego `compose.yml` musi być podłączony do tej samej sieci. Jeśli Twoja sieć Traefika ma inną nazwę, zmień ją w `compose.yml` w sekcji `networks` oraz w labelu `traefik.docker.network`.
 
 ## Eksport do QGIS
 
